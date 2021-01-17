@@ -8,8 +8,4 @@ const Ingredient = db.define('ingredient', {
     }
 })
 
-Ingredient.sync({ force: true }).then(() => {
-    console.log('recipe table migrated')
-})
-
 module.exports = { Ingredient }

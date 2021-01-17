@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize')
 const { db } = require("../db/database")
+const { Nutrition } = require("./nutrition")
+const { Ingredient } = require("./ingredient")
+const { Rating } = require("./rating")
 
 const Recipe = db.define('recipe', {
     title: {
@@ -40,15 +43,43 @@ const Recipe = db.define('recipe', {
     },
     method: {
         type: DataTypes.TEXT
+    },
+    thumbnailImageURL : {
+        type: DataTypes.STRING
     }
-    // this model can make use of imageURL
-    // nutrition will be relational 1-1
-    // ingredient will be relational 1 to many
-    // rating will be here relatonal 1 to many
 }) 
 
-Recipe.sync({ force: true }).then(() => {
-    console.log('recipe table migrated')
+Recipe.hasOne(Nutrition, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION"
+}) // recipe 1-1 nutrition
+Nutrition.belongsTo(Recipe, { foreignKey: 'recipeId' }) //nutrition 1-1 recipe
+
+Recipe.hasMany(Ingredient, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION"
+}) // recipe 1-* ingredient
+Ingredient.belongsTo(Recipe, { foreignKey: 'recipeId' }) // ingredient *-1 recipe
+
+Recipe.hasMany(Rating, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION"
+}) // recipe 1-* rating
+Rating.belongsTo(Recipe, { foreignKey: 'recipeId' }) // rating *-1 recipe
+
+/* migrations are hard reset in sequelize
+
+Nutrition.sync({ force: true }).then(() => {
+    console.log('nutrition table migrated')
 })
+
+Ingredient.sync({ force: true }).then(() => {
+    console.log('ingredient table migrated')
+})
+
+Rating.sync({ force: true }).then(() => {
+    console.log('rating table migrated')
+})
+*/
 
 module.exports = { Recipe }

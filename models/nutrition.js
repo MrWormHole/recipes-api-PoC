@@ -33,10 +33,6 @@ const Nutrition = db.define('nutrition', {
         type: DataTypes.STRING(10),
         allowNull: false
     }
-}) 
-
-Nutrition.sync({ force: true }).then(() => {
-    console.log('nutrition table migrated')
 })
 
 module.exports = { Nutrition }

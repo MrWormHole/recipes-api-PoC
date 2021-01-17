@@ -13,8 +13,4 @@ const Rating = db.define('rating', {
     }
 })
 
-Rating.sync({ force: true }).then(() => {
-    console.log('rating table migrated')
-})
-
 module.exports = { Rating }

@@ -6,5 +6,6 @@ module.exports = {
     sugars: "30g",
     fibre: "21g",
     protein: "22g",
-    salt: "2.4g"
+    salt: "2.4g",
+    recipeId: 1
 }

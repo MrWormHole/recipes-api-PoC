@@ -6,8 +6,8 @@ const { Rating } = require("../models/rating")
 const router = express.Router()
 
 // Get all ratings
-router.get("/", async (req, res) => {
-    await Rating.findAll()
+router.get("/", (req, res) => {
+    Rating.findAll()
         .then((ratings) => {
             res.status(200).json(ratings)
         })
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 
 //Get a rating
 router.get("/:id", (req, res) => {
-    let id = req.query.id
+    let id = req.params.id
 
     Rating.findByPk(id)
         .then((rating) => {
@@ -38,13 +38,13 @@ router.post("/", (req, res) => {
     let errors = []
 
 
-    if (!ratedBy || validator.isEmpty(data.ratedBy)) {
+    if (ratedBy === undefined || validator.isEmpty(ratedBy)) {
         errors.push({"Message": "ratedBy can not be blank!"})
     }
-    if (!stars || validator.isEmpty(data.stars) || !["0","1","2","3","4","5"].includes(data.stars)) {
+    if (stars == undefined || validator.isEmpty(stars.toString()) || !["0","1","2","3","4","5"].includes(stars.toString())) {
         errors.push({"Message": "stars can not be blank and has to be between 0-5!"})
     }
-    if (!recipeId || validator.isEmpty(data.recipeId.toString()) || !validator.isNumeric(data.recipeId.toString())) {
+    if (recipeId === undefined|| validator.isEmpty(recipeId.toString()) || !validator.isNumeric(recipeId.toString())) {
         errors.push({"Message": "recipeId can not be blank and has to be a number!"})
     }
     if (errors.length > 0) {
@@ -61,8 +61,9 @@ router.post("/", (req, res) => {
         })
 })
 
+//Delete a rating
 router.delete("/:id", (req, res) => {
-    let id = req.query.id
+    let id = req.params.id
 
     Rating.destroy({
         where: {
@@ -76,15 +77,17 @@ router.delete("/:id", (req, res) => {
     })
 })
 
+//Put a rating
 router.put("/:id", (req, res) => {
-    let id = req.query.id
+    let id = req.params.id
     let data = req.body
     let { ratedBy, stars } = data
+    let errors = []
 
-    if (!ratedBy || validator.isEmpty(data.ratedBy)) {
+    if (ratedBy === undefined || validator.isEmpty(ratedBy)) {
         errors.push({"Message": "ratedBy can not be blank!"})
     }
-    if (!stars || validator.isEmpty(data.stars) && !["0","1","2","3","4","5"].includes(data.stars.toString())) {
+    if (stars == undefined || validator.isEmpty(stars.toString()) || !["0","1","2","3","4","5"].includes(stars.toString())) {
         errors.push({"Message": "stars can not be blank and has to be between 0-5!"})
     }
     if (errors.length > 0) {
